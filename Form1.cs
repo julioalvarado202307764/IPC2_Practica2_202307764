@@ -27,96 +27,115 @@ namespace Practica2_202307764
         private Label lblTituloNombre;
         private Label lblTituloEdad;
         private Label lblTituloEspecialidad;
+        private MenuStrip menuPrincipal;
+        private ToolStripMenuItem menuNuevoTurno;
+        private ToolStripMenuItem menuAtenderPaciente;
+        private ToolStripMenuItem menuVerCola;
+        private ToolStripMenuItem menuSalir;
 
         // 2. Método para dibujarlos en la ventana
-        private void InicializarControles()
-        {
-            // Configuración básica del formulario
-            this.Text = "Sistema de Gestión de Turnos Médicos";
-            this.Size = new Size(850, 420);
-            this.BackColor = Color.FromArgb(240, 248, 255); // Un tono azul claro "médico" (AliceBlue)
-            this.StartPosition = FormStartPosition.CenterScreen;
+private void InicializarControles()
+{
+    // Configuración básica del formulario
+    this.Text = "Sistema de Gestión de Turnos Médicos";
+    this.Size = new Size(850, 380); // Ajustamos un poco el alto ya que quitamos los botones
+    this.BackColor = Color.FromArgb(240, 248, 255);
+    this.StartPosition = FormStartPosition.CenterScreen;
 
-            // Fuentes modernas
-            Font fuenteEtiquetas = new Font("Segoe UI", 10, FontStyle.Bold);
-            Font fuenteTextos = new Font("Segoe UI", 10, FontStyle.Regular);
+    Font fuenteEtiquetas = new Font("Segoe UI", 10, FontStyle.Bold);
+    Font fuenteTextos = new Font("Segoe UI", 10, FontStyle.Regular);
 
-            // Etiquetas descriptivas (¡Para que el usuario sepa qué llenar!)
-            lblTituloNombre = new Label() { Text = "Nombre del Paciente:", Location = new Point(20, 20), AutoSize = true, Font = fuenteEtiquetas, ForeColor = Color.DarkSlateGray };
-            lblTituloEdad = new Label() { Text = "Edad:", Location = new Point(20, 80), AutoSize = true, Font = fuenteEtiquetas, ForeColor = Color.DarkSlateGray };
-            lblTituloEspecialidad = new Label() { Text = "Especialidad Requerida:", Location = new Point(20, 140), AutoSize = true, Font = fuenteEtiquetas, ForeColor = Color.DarkSlateGray };
+    // Menú Principal
+    menuPrincipal = new MenuStrip();
+    menuPrincipal.BackColor = Color.LightSteelBlue;
+    menuPrincipal.Font = new Font("Segoe UI", 10, FontStyle.Regular);
 
-            // Campos de entrada
-            txtNombre = new TextBox() { Location = new Point(20, 45), Width = 230, Font = fuenteTextos };
-            numEdad = new NumericUpDown() { Location = new Point(20, 105), Width = 230, Font = fuenteTextos, Minimum = 0, Maximum = 120 };
-            cmbEspecialidad = new ComboBox() { Location = new Point(20, 165), Width = 230, Font = fuenteTextos, DropDownStyle = ComboBoxStyle.DropDownList };
-            cmbEspecialidad.DataSource = Enum.GetValues(typeof(EspecialidadMedica));
+    menuNuevoTurno = new ToolStripMenuItem("Nuevo Turno");
+    menuAtenderPaciente = new ToolStripMenuItem("Atender Paciente");
+    menuVerCola = new ToolStripMenuItem("Ver Cola de Turnos");
+    menuSalir = new ToolStripMenuItem("Salir");
 
-            // Botones con estilo "Flat" moderno
-            btnRegistrar = new Button()
-            {
-                Text = "Registrar Turno",
-                Location = new Point(20, 210),
-                Size = new Size(130, 40),
-                Font = fuenteEtiquetas,
-                BackColor = Color.MediumSeaGreen, // Verde para agregar
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
-            };
-            btnRegistrar.FlatAppearance.BorderSize = 0;
+    menuPrincipal.Items.Add(menuNuevoTurno);
+    menuPrincipal.Items.Add(menuAtenderPaciente);
+    menuPrincipal.Items.Add(menuVerCola);
+    menuPrincipal.Items.Add(menuSalir);
 
-            btnAtender = new Button()
-            {
-                Text = "Atender Siguiente",
-                Location = new Point(160, 210),
-                Size = new Size(150, 40),
-                Font = fuenteEtiquetas,
-                BackColor = Color.SteelBlue, // Azul para la acción principal
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
-            };
-            btnAtender.FlatAppearance.BorderSize = 0;
+    // Conectamos las opciones del menú con los métodos que ya tienes
+    menuNuevoTurno.Click += new EventHandler(btnRegistrar_Click); 
+    menuAtenderPaciente.Click += new EventHandler(btnAtender_Click); 
+    menuVerCola.Click += new EventHandler(menuVerCola_Click); 
+    menuSalir.Click += (s, e) => Application.Exit(); 
 
-            // Etiquetas de información destacadas
-            lblTiempoEstimado = new Label() { Text = "Tiempo estimado: --", Location = new Point(20, 270), AutoSize = true, Font = fuenteEtiquetas, ForeColor = Color.DarkRed };
-            lblInfoPaciente = new Label() { Text = "Paciente actual: Ninguno", Location = new Point(20, 300), AutoSize = true, Font = new Font("Segoe UI", 11, FontStyle.Bold), ForeColor = Color.DarkBlue };
+    // Etiquetas y Controles (Desplazados hacia abajo para no chocar con el menú)
+    lblTituloNombre = new Label() { Text = "Nombre del Paciente:", Location = new Point(20, 45), AutoSize = true, Font = fuenteEtiquetas, ForeColor = Color.DarkSlateGray };
+    txtNombre = new TextBox() { Location = new Point(20, 70), Width = 230, Font = fuenteTextos };
+    
+    lblTituloEdad = new Label() { Text = "Edad:", Location = new Point(20, 110), AutoSize = true, Font = fuenteEtiquetas, ForeColor = Color.DarkSlateGray };
+    numEdad = new NumericUpDown() { Location = new Point(20, 135), Width = 230, Font = fuenteTextos, Minimum = 0, Maximum = 120 };
+    
+    lblTituloEspecialidad = new Label() { Text = "Especialidad Requerida:", Location = new Point(20, 175), AutoSize = true, Font = fuenteEtiquetas, ForeColor = Color.DarkSlateGray };
+    cmbEspecialidad = new ComboBox() { Location = new Point(20, 200), Width = 230, Font = fuenteTextos, DropDownStyle = ComboBoxStyle.DropDownList };
+    cmbEspecialidad.DataSource = Enum.GetValues(typeof(EspecialidadMedica));
 
-            // PictureBox para Graphviz con fondo blanco para que resalte
-            picGrafo = new PictureBox()
-            {
-                Location = new Point(340, 45),
-                Width = 470,
-                Height = 300,
-                SizeMode = PictureBoxSizeMode.Zoom,
-                BackColor = Color.White,
-                BorderStyle = BorderStyle.FixedSingle
-            };
+    // Etiquetas de información destacadas
+    lblTiempoEstimado = new Label() { Text = "Tiempo estimado: --", Location = new Point(20, 245), AutoSize = true, Font = fuenteEtiquetas, ForeColor = Color.DarkRed };
+    lblInfoPaciente = new Label() { Text = "Paciente actual: Ninguno", Location = new Point(20, 275), AutoSize = true, Font = new Font("Segoe UI", 11, FontStyle.Bold), ForeColor = Color.DarkBlue };
 
-            // Conectar eventos
-            btnRegistrar.Click += new EventHandler(btnRegistrar_Click);
-            btnAtender.Click += new EventHandler(btnAtender_Click);
+    // PictureBox para Graphviz
+    picGrafo = new PictureBox() { 
+        Location = new Point(340, 45), 
+        Width = 470, 
+        Height = 270, 
+        SizeMode = PictureBoxSizeMode.Zoom,
+        BackColor = Color.White,
+        BorderStyle = BorderStyle.FixedSingle
+    };
 
-            // Agregar todo al formulario
-            this.Controls.Add(lblTituloNombre);
-            this.Controls.Add(lblTituloEdad);
-            this.Controls.Add(lblTituloEspecialidad);
-            this.Controls.Add(txtNombre);
-            this.Controls.Add(numEdad);
-            this.Controls.Add(cmbEspecialidad);
-            this.Controls.Add(btnRegistrar);
-            this.Controls.Add(btnAtender);
-            this.Controls.Add(lblTiempoEstimado);
-            this.Controls.Add(lblInfoPaciente);
-            this.Controls.Add(picGrafo);
-        }
+    // Agregar todo al formulario
+    this.Controls.Add(menuPrincipal);
+    this.MainMenuStrip = menuPrincipal;
+    
+    this.Controls.Add(lblTituloNombre);
+    this.Controls.Add(txtNombre);
+    this.Controls.Add(lblTituloEdad);
+    this.Controls.Add(numEdad);
+    this.Controls.Add(lblTituloEspecialidad);
+    this.Controls.Add(cmbEspecialidad);
+    
+    this.Controls.Add(lblTiempoEstimado);
+    this.Controls.Add(lblInfoPaciente);
+    this.Controls.Add(picGrafo);
+}
 
         private void Form1_Load(object sender, EventArgs e)
         {
             // Cargamos las especialidades en el ComboBox
             cmbEspecialidad.DataSource = Enum.GetValues(typeof(EspecialidadMedica));
             ActualizarGrafo(); // Mostramos la cola vacía al iniciar
+        }
+        private void menuVerCola_Click(object sender, EventArgs e)
+        {
+            if (colaTurnos.EstaVacia())
+            {
+                MessageBox.Show("Actualmente no hay pacientes en la cola.", "Ver Cola de Turnos", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            string reporteCola = "--- ESTADO ACTUAL DE LA COLA ---\n\n";
+            Nodo actual = colaTurnos.ObtenerFrente();
+            int posicion = 1;
+
+            while (actual != null)
+            {
+                Turno t = actual.Valor;
+                reporteCola += $"Turno {posicion}: {t.Nombre} ({t.Edad} años) - {t.Especialidad}\n" +
+                               $"   ⏱ Atención: {t.TiempoAtencion} min | ⏳ Cola: {t.TiempoEnCola} min | ⌛ Total: {t.TiempoTotal} min\n\n";
+
+                actual = actual.Siguiente;
+                posicion++;
+            }
+
+            MessageBox.Show(reporteCola, "Ver Cola de Turnos", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void btnRegistrar_Click(object sender, EventArgs e)
@@ -134,11 +153,12 @@ namespace Practica2_202307764
             Turno nuevoTurno = new Turno(nombre, edad, especialidad);
 
             // Encolamos y obtenemos el tiempo estimado (espera + atención)
-            int tiempoEstimado = colaTurnos.Encolar(nuevoTurno);
+            // Encolamos el turno
+            colaTurnos.Encolar(nuevoTurno);
 
-            lblTiempoEstimado.Text = $"Tiempo estimado para {nombre}: {tiempoEstimado} minutos.";
-            MessageBox.Show($"Turno registrado. Tiempo estimado: {tiempoEstimado} minutos.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+            // Leemos el tiempo total directamente del objeto que acabamos de crear
+            lblTiempoEstimado.Text = $"Tiempo estimado para {nombre}: {nuevoTurno.TiempoTotal} minutos.";
+            MessageBox.Show($"Turno registrado.\nTiempo en cola: {nuevoTurno.TiempoEnCola} min\nTiempo de atención: {nuevoTurno.TiempoAtencion} min\nTiempo total: {nuevoTurno.TiempoTotal} min", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
             // Limpiamos los campos
             txtNombre.Clear();
             numEdad.Value = 0;
@@ -152,21 +172,30 @@ namespace Practica2_202307764
 
             if (pacienteAtendido == null)
             {
-                // Si la cola ya estaba vacía
                 lblInfoPaciente.Text = "No hay pacientes en espera.";
-                lblTiempoEstimado.Text = "Tiempo estimado: --"; // <- Reiniciamos el tiempo
+                lblTiempoEstimado.Text = "Tiempo estimado: --";
                 MessageBox.Show("No hay turnos pendientes para atender.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                // Al atender, mostramos la info del paciente
-                lblInfoPaciente.Text = $"Atendiendo a: {pacienteAtendido.Nombre} | Edad: {pacienteAtendido.Edad} | Especialidad: {pacienteAtendido.Especialidad}";
+                // Actualizamos la interfaz
+                lblInfoPaciente.Text = $"Atendiendo a: {pacienteAtendido.Nombre} | {pacienteAtendido.Especialidad}";
 
-                // Validamos si este era el ÚLTIMO paciente de la fila
                 if (colaTurnos.EstaVacia())
                 {
-                    lblTiempoEstimado.Text = "Tiempo estimado: --"; // <- Reiniciamos el tiempo si ya no queda nadie atrás
+                    lblTiempoEstimado.Text = "Tiempo estimado: --";
                 }
+
+                // Mostramos el MessageBox con el desglose exacto que pide la rúbrica
+                string mensajeAtencion = $"--- PACIENTE ATENDIDO ---\n\n" +
+                                         $"Nombre: {pacienteAtendido.Nombre}\n" +
+                                         $"Edad: {pacienteAtendido.Edad}\n" +
+                                         $"Especialidad: {pacienteAtendido.Especialidad}\n\n" +
+                                         $"⏱ Tiempo de atención: {pacienteAtendido.TiempoAtencion} min\n" +
+                                         $"⏳ Tiempo en cola: {pacienteAtendido.TiempoEnCola} min\n" +
+                                         $"⌛ Tiempo total: {pacienteAtendido.TiempoTotal} min";
+
+                MessageBox.Show(mensajeAtencion, "Turno Atendido", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
             ActualizarGrafo();

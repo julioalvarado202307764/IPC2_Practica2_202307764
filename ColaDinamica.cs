@@ -11,12 +11,13 @@ public class ColaDinamica
         tiempoEsperaAcumulado = 0;
     }
 
-    public int Encolar(Turno nuevoTurno)
+    public void Encolar(Turno nuevoTurno)
     {
-        Nodo nuevoNodo = new Nodo(nuevoTurno);
-       // El tiempo estimado para este paciente es el tiempo acumulado de los que ya están en cola MÁS su propio tiempo de atención.
-        int tiempoEstimadoPaciente = tiempoEsperaAcumulado + nuevoTurno.TiempoAtencion;
+        // El tiempo en cola del nuevo paciente es el tiempo acumulado de los que ya están
+        nuevoTurno.TiempoEnCola = tiempoEsperaAcumulado;
 
+        Nodo nuevoNodo = new Nodo(nuevoTurno);
+        
         if (frente == null)
         {
             frente = nuevoNodo;
@@ -27,16 +28,14 @@ public class ColaDinamica
             final.Siguiente = nuevoNodo;
             final = nuevoNodo;
         }
-        
-        // Actualizamos el tiempo total de la cola
-        tiempoEsperaAcumulado += nuevoTurno.TiempoAtencion; 
-        
-        return tiempoEstimadoPaciente;
+
+        // Sumamos el tiempo de atención del nuevo paciente al total de la cola
+        tiempoEsperaAcumulado += nuevoTurno.TiempoAtencion;
     }
 
     public Turno Desencolar()
     {
-        if (frente == null) return null; // Retorna null si no hay turnos pendientes[cite: 37].
+        if (frente == null) return null;
 
         Turno turnoAtendido = frente.Valor;
         frente = frente.Siguiente;
@@ -46,18 +45,34 @@ public class ColaDinamica
             final = null;
         }
 
-        // Al atender a un paciente, restamos su tiempo del total acumulado en la cola
+        // Restamos el tiempo del paciente que acaba de salir
         tiempoEsperaAcumulado -= turnoAtendido.TiempoAtencion;
 
+        // ¡Magia aquí! Actualizamos el tiempo en cola de los que se quedaron esperando
+        ActualizarTiemposEnCola();
+
         return turnoAtendido;
+    }
+
+    // Método interno para recalcular la espera de los pacientes restantes
+    private void ActualizarTiemposEnCola()
+    {
+        int tiempoAcumuladoTemp = 0;
+        Nodo actual = frente;
+
+        while (actual != null)
+        {
+            actual.Valor.TiempoEnCola = tiempoAcumuladoTemp;
+            tiempoAcumuladoTemp += actual.Valor.TiempoAtencion;
+            actual = actual.Siguiente;
+        }
     }
 
     public bool EstaVacia()
     {
         return frente == null;
     }
-    
-    // Método extra para facilitar la generación de Graphviz más adelante
+
     public Nodo ObtenerFrente()
     {
         return frente;

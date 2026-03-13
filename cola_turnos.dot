@@ -1,5 +1,7 @@
 digraph G {
   rankdir=LR;
   node [shape=record, style=filled, fontname="Segoe UI"];
-  Vacia [label="Cola Vacía", shape=box, fillcolor="#e0e0e0"];
+  nodo0 [label="{ Turno: 1 | Paciente: Alvarado | Pediatria }", fillcolor="#98fb98"];
+  nodo1 [label="{ Turno: 2 | Paciente: Josue | Ginecologia }", fillcolor="#ffb6c1"];
+  nodo0 -> nodo1 [color="#555555", penwidth=2.0];
 }
