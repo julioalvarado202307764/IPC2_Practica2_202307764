@@ -1,5 +1,5 @@
 digraph G {
   rankdir=LR;
-  node [shape=record, style=filled, fillcolor=lightblue, fontname="Arial"];
-  Vacia [label="Cola Vacía", shape=box, fillcolor=lightcoral];
+  node [shape=record, style=filled, fontname="Segoe UI"];
+  Vacia [label="Cola Vacía", shape=box, fillcolor="#e0e0e0"];
 }

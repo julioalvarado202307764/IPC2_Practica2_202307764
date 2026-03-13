@@ -5,52 +5,64 @@ using System.IO;
 public static class ReporteGraphviz
 {
     // Método principal que genera el archivo .dot y luego la imagen
-    public static void GenerarGraficoCola(ColaDinamica cola)
+public static void GenerarGraficoCola(ColaDinamica cola)
     {
-        // Configuramos el documento Graphviz
-        // rankdir=LR hace que la cola se dibuje de izquierda a derecha
         string dotContenido = "digraph G {\n";
         dotContenido += "  rankdir=LR;\n"; 
-        dotContenido += "  node [shape=record, style=filled, fillcolor=lightblue, fontname=\"Arial\"];\n";
+        // Quitamos el fillcolor global para poder personalizar cada nodo individualmente
+        dotContenido += "  node [shape=record, style=filled, fontname=\"Segoe UI\"];\n";
 
         Nodo actual = cola.ObtenerFrente();
         int contador = 0;
 
         if (actual == null)
         {
-            // Si la cola está vacía, mostramos un nodo indicándolo
-            dotContenido += "  Vacia [label=\"Cola Vacía\", shape=box, fillcolor=lightcoral];\n";
+            dotContenido += "  Vacia [label=\"Cola Vacía\", shape=box, fillcolor=\"#e0e0e0\"];\n";
         }
         else
         {
-            // Primera pasada: crear todos los nodos de la cola
             Nodo temp = actual;
             while (temp != null)
             {
                 string nombreEspecialidad = temp.Valor.Especialidad.ToString();
-                // Usamos formato de registro (record) para mostrar los datos ordenados
-                dotContenido += $"  nodo{contador} [label=\"{{ Turno: {contador + 1} | Paciente: {temp.Valor.Nombre} | {nombreEspecialidad} }}\"];\n";
+                string colorNodo = "white"; // Color por defecto
+                
+                // Asignamos un color en formato hexadecimal según la especialidad
+                switch (temp.Valor.Especialidad)
+                {
+                    case EspecialidadMedica.MedicinaGeneral: 
+                        colorNodo = "\"#add8e6\""; // Azul claro
+                        break;
+                    case EspecialidadMedica.Pediatria: 
+                        colorNodo = "\"#98fb98\""; // Verde pálido
+                        break;
+                    case EspecialidadMedica.Ginecologia: 
+                        colorNodo = "\"#ffb6c1\""; // Rosa claro
+                        break;
+                    case EspecialidadMedica.Dermatologia: 
+                        colorNodo = "\"#fffacd\""; // Amarillo suave
+                        break;
+                }
+
+                // Aplicamos el colorNodo específico a este paciente
+                dotContenido += $"  nodo{contador} [label=\"{{ Turno: {contador + 1} | Paciente: {temp.Valor.Nombre} | {nombreEspecialidad} }}\", fillcolor={colorNodo}];\n";
                 contador++;
                 temp = temp.Siguiente;
             }
 
-            // Segunda pasada: crear las flechas que conectan los nodos (FIFO)
+            // Hacemos que las flechas se vean un poco más gruesas y de color gris oscuro
             for (int i = 0; i < contador - 1; i++)
             {
-                dotContenido += $"  nodo{i} -> nodo{i + 1};\n";
+                dotContenido += $"  nodo{i} -> nodo{i + 1} [color=\"#555555\", penwidth=2.0];\n";
             }
         }
 
         dotContenido += "}\n";
 
-        // Rutas de los archivos (se guardarán en la carpeta bin/Debug de tu proyecto)
         string dotPath = "cola_turnos.dot";
         string imagePath = "cola_turnos.png";
 
-        // 1. Guardar el texto en el archivo .dot
         File.WriteAllText(dotPath, dotContenido);
-
-        // 2. Ejecutar Graphviz para compilar la imagen
         CompilarImagen(dotPath, imagePath);
     }
 
